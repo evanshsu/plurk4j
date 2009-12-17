@@ -1,5 +1,11 @@
 package plurk4j.entity;
 
+/***
+ * Plurk Entity
+ * @author afat613@gmail.com
+ * @since 2009/12/27
+ * @version 0.0.1
+ */
 public class Plurk {
     public Long plurk_id; // The unique Plurk id, used for identification of the plurk. 
     public String qualifier; // The English qualifier, can be "says", [loves,likes,shares,gives,hates,wants,has,will,asks,wishes,was,feels,thinks,says,is,:,freestyle,hopes,needs,wonders]

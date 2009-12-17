@@ -3,11 +3,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import plurk4j.PlurkUtils;
 import plurk4j.entity.Plurk;
 import plurk4j.entity.PlurkUser;
 
-
+/***
+ * PlurkProfile Entity
+ * It's mapping to Plurk JSON message.
+ * @author afat613@gmail.com
+ * @since 2009/12/27
+ * @version 0.0.1
+ */
 public class PlurkProfile {
 	private Long friends_count;
 	private Long fans_count;

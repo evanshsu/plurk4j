@@ -1,7 +1,6 @@
 package plurk4j;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -14,6 +13,12 @@ import plurk4j.entity.PlurkUser;
 import plurk4j.json.PlurkProfile;
 import plurk4j.json.Plurks;
 
+/***
+ * Plurk Common Utils
+ * @author afat613@gmail.com
+ * @since 2009/12/27
+ * @version 0.0.1
+ */
 public class PlurkUtils {
 	private static final String PLURK_URI = "http://www.plurk.com/API";
 	private static String api_key = "FY9U2Ju3PMeeKO0kPp3wOdrGD8hgb2Zb";
@@ -21,20 +26,39 @@ public class PlurkUtils {
 	
 	private PlurkUtils() {}
 	
+	/***
+	 * Every session is mapping to a Http connection and a Plurk User.
+	 * @return PlurkSession
+	 */
 	public static PlurkSession createSession() {
 		PlurkSession session = new PlurkSession();
 		session.setHttpclient(new DefaultHttpClient());
 		return session;
 	}
+	/***
+	 * The same with createSession, but you can use your API_KEY for this session.
+	 * @return PlurkSession
+	 */
 	public static PlurkSession createSession(String api_key) {
 		PlurkSession session = PlurkUtils.createSession();
 		session.setApi_key(api_key);
 		return session;
 	}
+	/***
+	 * Close session when you don't need this plurk user.
+	 * @param session PlurkSession
+	 * @return true:success, false:failure
+	 */
 	public static boolean closeSession(PlurkSession session) {
 		return session.close();
 	}
-
+	/***
+	 * Login plurk user
+	 * @param session PlurkSession
+	 * @param username Username in plurk
+	 * @param password Password in plurk
+	 * @return true:success, false:failure
+	 */
 	public static boolean login(PlurkSession session,String username, String password) {
 		String result = null;
 		session.setLogin(true);
@@ -79,7 +103,12 @@ public class PlurkUtils {
 		
 		return true;
 	}
-	
+	/***
+	 * Get other's profile
+	 * @param session PlurkSession
+	 * @param user_id user_id
+	 * @return PlurkProfile
+	 */
 	public static PlurkProfile getPublicProfile(PlurkSession session,Long user_id) {
 		String result = null;
 		try {
@@ -103,18 +132,23 @@ public class PlurkUtils {
 		
 		return null;
 	}
+	/***
+	 * Get plurks about this session
+	 * @param session PlurkSession
+	 * @return Plurks
+	 */
 	public static Plurks getPlurks(PlurkSession session) {
 		return PlurkUtils.getPlurks(session,null,null,null,null,null);
 	}
 	/***
-	 * 
+	 * Get plurks
 	 * @param session PlurkSession
 	 * @param offset Return plurks older than offset, formatted as 2009-6-20T21:55:34. 
 	 * @param limit How many plurks should be returned? Default is 20. 
 	 * @param only_user The numeric ID of the user who's plurks should be returned. 
 	 * @param only_responded Setting it to true will only return responded plurks 
 	 * @param only_private Setting it to true will only return private plurks 
-	 * @return
+	 * @return Plurks
 	 */
 	public static Plurks getPlurks(PlurkSession session, String offset, Long limit
 			,Long only_user,Boolean only_responded,Boolean only_private) {

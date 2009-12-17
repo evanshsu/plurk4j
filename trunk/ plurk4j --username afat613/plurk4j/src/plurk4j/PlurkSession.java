@@ -11,6 +11,12 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import plurk4j.entity.PlurkUser;
 import plurk4j.json.PlurkProfile;
 
+/***
+ * Plurk Session
+ * @author afat613@gmail.com
+ * @since 2009/12/27
+ * @version 0.0.1
+ */
 public class PlurkSession{
 	private String api_key;
 	private HttpClient httpclient;

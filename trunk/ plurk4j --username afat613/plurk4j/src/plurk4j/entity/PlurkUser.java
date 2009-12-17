@@ -3,6 +3,12 @@ package plurk4j.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ * PlurkUser Entity
+ * @author afat613@gmail.com
+ * @since 2009/12/27
+ * @version 0.0.1
+ */
 public class PlurkUser {
 	public Long uid;
 	public Long id; // The unique user id.

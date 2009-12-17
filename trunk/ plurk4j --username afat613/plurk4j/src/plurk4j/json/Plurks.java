@@ -7,6 +7,13 @@ import java.util.Map;
 import plurk4j.entity.Plurk;
 import plurk4j.entity.PlurkUser;
 
+/***
+ * Plurks Entity
+ * It's mapping to Plurk JSON message.
+ * @author afat613@gmail.com
+ * @since 2009/12/27
+ * @version 0.0.1
+ */
 public class Plurks {
 	private Map<String,PlurkUser> plurk_users;
 	private List<Plurk> plurks;
