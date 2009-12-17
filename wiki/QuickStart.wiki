@@ -1,6 +1,7 @@
 #summary Quick Start
 
 === 1. Check these jar in your build path ===
+_download from [http://code.google.com/p/plurk4j/downloads/list]_
  * plurk4j.jar
  * apache-mime4j-0.6.jar
  * commons-codec-1.3.jar
