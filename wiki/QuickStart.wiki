@@ -11,7 +11,7 @@
  * jackson-core-lgpl-1.3.2.jar
  * jackson-mapper-lgpl-1.3.2.jar
 
-=== 2. execute follow code ===
+=== 2. Execute follow code ===
 _replace username and password before executed_
 {{{
 import plurk4j.PlurkSession;
