@@ -1,0 +1,54 @@
+#summary Quick Start
+
+=== 1. Check these jar in your build path ===
+ * plurk4j.jar
+ * apache-mime4j-0.6.jar
+ * commons-codec-1.3.jar
+ * commons-logging-1.1.1.jar
+ * httpclient-4.0.jar
+ * httpcore-4.0.1.jar
+ * httpmime-4.0.jar
+ * jackson-core-lgpl-1.3.2.jar
+ * jackson-mapper-lgpl-1.3.2.jar
+
+=== 2. execute follow code ===
+_replace username and password before executed_
+{{{
+import plurk4j.PlurkSession;
+import plurk4j.PlurkUtils;
+import plurk4j.json.PlurkProfile;
+import plurk4j.json.Plurks;
+
+public class Plurk4jDemo {
+	public static void main(String[] args) {
+		String username = "plurk_username";
+		String password = "plurk_password";
+		PlurkSession session = PlurkUtils.createSession(); 
+		if(PlurkUtils.login(session,username, password)) 
+			System.out.println("login success\n");
+		if(session.isLogin()) {
+			session.getUserInfo().print();
+			
+			PlurkProfile profile = session.getOwnProfile();
+			profile.print();
+			
+			PlurkProfile otherProfile = PlurkUtils.getPublicProfile(session,18757L);
+			otherProfile.print();
+			
+			Plurks plurks = PlurkUtils.getPlurks(session);
+			plurks.print();
+			
+			if(session.getUserInfo() != null)
+				PlurkUtils.getPlurks(session,null,null,session.getUserInfo().uid,null,null).print();
+		}
+		else {
+			System.out.println("session is not enable: " + session.getError());
+		}
+		
+		
+		PlurkUtils.closeSession(session);
+
+	}
+
+}
+}}}
