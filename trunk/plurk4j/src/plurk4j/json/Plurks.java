@@ -17,7 +17,7 @@ import plurk4j.entity.PlurkUser;
 public class Plurks {
 	private Map<String,PlurkUser> plurk_users;
 	private List<Plurk> plurks;
-	
+
 	public void print() {
 		print("");
 	}
@@ -33,7 +33,6 @@ public class Plurks {
 				plurk_user.print("    ");
 			}
 		}
-		
 	}
 	public Map<String, PlurkUser> getPlurk_users() {
 		return plurk_users;
@@ -46,7 +45,6 @@ public class Plurks {
 	}
 	public void setPlurks(List<Plurk> plurks) {
 		this.plurks = plurks;
-	}	
-	
+	}
 	
 }

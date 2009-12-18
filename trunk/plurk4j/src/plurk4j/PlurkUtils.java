@@ -10,7 +10,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import plurk4j.entity.Plurk;
 import plurk4j.entity.PlurkUser;
+import plurk4j.entity.Plurk.PlurkQualifier;
 import plurk4j.json.PlurkProfile;
+import plurk4j.json.PlurkResponses;
 import plurk4j.json.Plurks;
 
 /***
@@ -60,6 +62,10 @@ public class PlurkUtils {
 	 * @return true:success, false:failure
 	 */
 	public static boolean login(PlurkSession session,String username, String password) {
+		if(username == null || password == null) {
+			session.setError("username or password is null");
+			return false;
+		}
 		String result = null;
 		session.setLogin(true);
 		try {
@@ -110,6 +116,10 @@ public class PlurkUtils {
 	 * @return PlurkProfile
 	 */
 	public static PlurkProfile getPublicProfile(PlurkSession session,Long user_id) {
+		if(user_id == null) {
+			session.setError("user_id is null");
+			return null;
+		}
 		String result = null;
 		try {
 			result = session.execute(PLURK_URI + "/Profile/getPublicProfile?api_key="
@@ -194,9 +204,99 @@ public class PlurkUtils {
 		
 		return null;
 	}
-	
-	
-	
+	/***
+	 * Get Plurk Responses
+	 * @param session PlurkSession
+	 * @param plurk_id The plurk that the responses should be added to. 
+	 * @param from_response Only fetch responses from an offset, should be 5, 10 or 15. 
+	 * @return
+	 */
+	public static PlurkResponses getResponses(PlurkSession session, Long plurk_id, Long from_response) {
+		String result = null;
+		try {
+			result = session.execute(PLURK_URI + "/Responses/get?api_key="
+					+ PlurkUtils.getApi_key(session) + "&plurk_id=" + plurk_id
+					+ "&from_response=" + from_response);
+		} catch (Exception e) {
+			session.setError(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		if(result != null) {
+			try {
+				return json.readValue(result, PlurkResponses.class);
+			} catch (Exception e) {
+//				session.setError(e.getMessage());
+//				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+
+	/***
+	 * Add Response
+	 * @param session PlurkSession
+	 * @param plurk_id The plurk that the responses should be added to. 
+	 * @param content The response's text. 
+	 * @param qualifier The Plurk's qualifier, must be in English. [loves,likes,shares,gives,hates,wants,has,will,asks,wishes,was,feels,thinks,says,is,:,freestyle,hopes,needs,wonders]
+	 * @return
+	 */
+	public static Plurk addResponse(PlurkSession session, Long plurk_id, String content, PlurkQualifier qualifier) {
+		String result = null;
+		try {
+			result = session.execute(PLURK_URI + "/Responses/responseAdd?api_key="
+					+ PlurkUtils.getApi_key(session) + "&plurk_id=" + plurk_id
+					+ "&content=" + content + "&qualifier=" + qualifier.toString());
+		} catch (Exception e) {
+			session.setError(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		if(result != null) {
+			try {
+				return json.readValue(result, Plurk.class);
+			} catch (Exception e) {
+				session.setError(e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+	/***
+	 * Add Plurk
+	 * @param session PlurkSession
+	 * @param content The Plurk's text.  
+	 * @param qualifier The Plurk's qualifier, must be in English. [loves,likes,shares,gives,hates,wants,has,will,asks,wishes,was,feels,thinks,says,is,:,freestyle,hopes,needs,wonders]
+	 * @return
+	 */
+	public static Plurk addPlurk(PlurkSession session, String content, PlurkQualifier qualifier) {
+		String result = null;
+		try {
+			result = session.execute(PLURK_URI + "/Timeline/plurkAdd?api_key="
+					+ PlurkUtils.getApi_key(session)
+					+ "&content=" + content + "&qualifier=" + qualifier.toString());
+		} catch (Exception e) {
+			session.setError(e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+		if(result != null) {
+			try {
+				return json.readValue(result, Plurk.class);
+			} catch (Exception e) {
+				session.setError(e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
+		return null;
+	}
+
 	public static String getApi_key(PlurkSession session) {
 		if(session.getApi_key() != null && session.getApi_key().length() > 0)
 			return session.getApi_key();
