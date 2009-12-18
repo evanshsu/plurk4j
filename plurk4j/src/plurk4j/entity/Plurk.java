@@ -7,6 +7,7 @@ package plurk4j.entity;
  * @version 0.0.1
  */
 public class Plurk {
+	public Long id;
     public Long plurk_id; // The unique Plurk id, used for identification of the plurk. 
     public String qualifier; // The English qualifier, can be "says", [loves,likes,shares,gives,hates,wants,has,will,asks,wishes,was,feels,thinks,says,is,:,freestyle,hopes,needs,wonders]
     public String qualifier_translated; // Only set if the language is not English, will be the translated qualifier. Can be "siger" if plurk.lang is "da" (Danish). 
@@ -48,5 +49,25 @@ public class Plurk {
 		System.out.print(",owner_id=" + owner_id);
 		System.out.print(",posted=" + posted);
 		System.out.println(",content=" + content);
+	}
+	
+	public enum PlurkQualifier {
+		loves("loves"), likes("likes"), shares("shares")
+		,gives("gives"), hates("hates"), wants("wants")
+		,has("has"), will("will"), asks("asks")
+		,wishes("wishes"), was("was"), feels("feels")
+		,thinks("thinks"), says("says"), is("is")
+		,colon(":"), freestyle("freestyle"), hopes("hopes")
+		,needs("needs"), wonders("wonders");
+
+		private String description;
+
+		PlurkQualifier(String description) {
+			this.description = description;
+		}
+
+		public String toString() {
+			return description;
+		}
 	}
 }
