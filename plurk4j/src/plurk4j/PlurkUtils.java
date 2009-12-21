@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -25,6 +26,9 @@ public class PlurkUtils {
 	private static final String PLURK_URI = "http://www.plurk.com/API";
 	private static String api_key = "FY9U2Ju3PMeeKO0kPp3wOdrGD8hgb2Zb";
 	private static ObjectMapper json = new ObjectMapper();
+	static {
+		json.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	}
 	
 	private PlurkUtils() {}
 	
