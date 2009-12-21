@@ -26,7 +26,9 @@ public class PlurkUtils {
 	private static final String PLURK_URI = "http://www.plurk.com/API";
 	private static String api_key = "FY9U2Ju3PMeeKO0kPp3wOdrGD8hgb2Zb";
 	private static ObjectMapper json = new ObjectMapper();
+	
 	static {
+		//when plurk json format change or add new field, we won't throw exception.
 		json.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 	
