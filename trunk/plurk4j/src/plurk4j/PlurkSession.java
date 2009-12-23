@@ -1,61 +1,40 @@
 package plurk4j;
 
-import java.io.IOException;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-
-import plurk4j.entity.PlurkUser;
-import plurk4j.json.PlurkProfile;
+import plurk4j.entity.PlurkProfile;
 
 /***
  * Plurk Session
+ * Every session is mapping to a Http connection and a Plurk User.
+ * 
  * @author afat613@gmail.com
  * @since 2009/12/27
  * @version 0.0.1
  */
 public class PlurkSession{
 	private String api_key;
-	private HttpClient httpclient;
-	private PlurkProfile ownProfile;
-	private PlurkUser userInfo;
+	private PlurkHttp plurkHttpAdapter;
+
+	private PlurkProfile profile;
 	private Boolean login = false;
 	private String error;
 	
-	public boolean close() {
-		try{
-			httpclient.getConnectionManager().shutdown();
-			return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+	PlurkSession() {}
+	PlurkSession(PlurkHttp plurkHttpAdapter) {
+		this.plurkHttpAdapter = plurkHttpAdapter;
 	}
 	
-	public String execute(String uri) throws ClientProtocolException, IOException {
-		HttpClient httpclient = this.getHttpclient();
-		HttpGet httpget = new HttpGet(uri);
-		ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		return httpclient.execute(httpget, responseHandler);
+	boolean init() {
+		if(plurkHttpAdapter == null)
+			plurkHttpAdapter = new PlurkHttpAdapter();
+		return plurkHttpAdapter.init();
 	}
-
-	HttpClient getHttpclient() {
-		return httpclient;
+	
+	boolean close() {
+		return plurkHttpAdapter.close();
 	}
-
-	public void setHttpclient(HttpClient httpclient) {
-		this.httpclient = httpclient;
-	}
-	public PlurkProfile getOwnProfile() {
-		return ownProfile;
-	}
-
-	public void setOwnProfile(PlurkProfile ownProfile) {
-		this.ownProfile = ownProfile;
+	
+	public String execute(String url) throws Exception {
+		return plurkHttpAdapter.execute(url);
 	}
 
 	public Boolean isLogin() {
@@ -90,12 +69,20 @@ public class PlurkSession{
 		this.login = login;
 	}
 
-	public PlurkUser getUserInfo() {
-		return userInfo;
+	public PlurkProfile getProfile() {
+		return profile;
 	}
 
-	public void setUserInfo(PlurkUser userInfo) {
-		this.userInfo = userInfo;
+	public void setProfile(PlurkProfile profile) {
+		this.profile = profile;
+	}
+	
+	public PlurkHttp getPlurkHttpAdapter() {
+		return plurkHttpAdapter;
+	}
+
+	public void setPlurkHttpAdapter(PlurkHttp plurkHttpAdapter) {
+		this.plurkHttpAdapter = plurkHttpAdapter;
 	}
 
 }

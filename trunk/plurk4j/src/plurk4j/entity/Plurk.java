@@ -1,73 +1,217 @@
 package plurk4j.entity;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import plurk4j.PlurkFactory;
+import plurk4j.entity.PlurkEnum.PlurkIsUnread;
+import plurk4j.entity.PlurkEnum.PlurkNoComments;
+import plurk4j.entity.PlurkEnum.PlurkQualifier;
+import plurk4j.entity.PlurkEnum.PlurkType;
+import plurk4j.official.JsonPlurk;
+
 /***
  * Plurk Entity
  * @author afat613@gmail.com
  * @since 2009/12/27
- * @version 0.0.1
+ * @version 0.1.1
  */
-public class Plurk {
-	public Long id;
-    public Long plurk_id; // The unique Plurk id, used for identification of the plurk. 
-    public String qualifier; // The English qualifier, can be "says", [loves,likes,shares,gives,hates,wants,has,will,asks,wishes,was,feels,thinks,says,is,:,freestyle,hopes,needs,wonders]
-    public String qualifier_translated; // Only set if the language is not English, will be the translated qualifier. Can be "siger" if plurk.lang is "da" (Danish). 
-    public Integer is_unread; // Specifies if the plurk is read, unread or muted. Show example data
-//  is_unread=0 //Read
-//  is_unread=1 //Unread
-//  is_unread=2 //Muted
-    public Integer plurk_type; // Specifies what type of plurk it is and if the plurk has been responded by the user. The value of plurk_type is only correct when calling getPlurks with only_responded filter (this is done for perfomance and caching reasons). Show example data
-//    plurk_type=0 //Plublic plurk
-//    plurk_type=1 //Private plurk
-//    plurk_type=2 //Plublic plurk (responded by the logged in user)
-//    plurk_type=3 //Private plurk (responded by the logged in user)
-    public Long user_id; // Which timeline does this Plurk belong to. 
-    public Long owner_id; // Who is the owner/poster of this plurk. 
-    public String posted; // The date this plurk was posted. 
-    public Integer no_comments; // If set to 1, then responses are disabled for this plurk.
-    						   //If set to 2, then only friends can respond to this plurk. 
-    public String content; // The formatted content, emoticons and images will be turned into IMG tags etc. 
-    public String content_raw; // The raw content as user entered it, useful when editing plurks or if you want to format the content differently. 
-    public Long response_count; // How many responses does the plurk have. 
-    public Long responses_seen; // How many of the responses have the user read. This is automatically updated when fetching responses or marking a plurk as read. 
-    public String lang; // ['en','pt_BR','cn','ca','el','dk','de','es','sv','nb','hi','ro','hr','fr','ru','it','ja','he','hu','ne','th','ta_fp','in','pl','ar','fi','tr_ch','tr','ga','sk','uk','fa']
-	public String limited_to; // Limit the plurk only to some users (also known as private plurking). limited_to should be a JSON list of friend ids, e.g. limited_to of [3,4,66,34] will only be plurked to these user ids.
-	private PlurkUser plurkUser;
+public class Plurk implements Serializable{
+	private static final long serialVersionUID = 5836632618014654785L;
+	private Long id;
+	private PlurkQualifier qualifier;
+    private String qualifierTranslated; 
+    private PlurkIsUnread isUnread;
+    private PlurkType plurkType;
+    private Long userId; 
+    private Long ownerId;
+    private PlurkUser plurkUser;
+    private PlurkUser plurkOwner;
+    private Date posted; 
+    private PlurkNoComments noComments; 
+    private String content; 
+    private String contentRaw; 
+    private Long responseCount; 
+    private Long responsesSeen; 
+    private String lang;
+	private String limitedTo;
 	
+	private Plurk parent;
+	private List<Plurk> responses;
+	
+	private JsonPlurk jsonPlurk;
+	public JsonPlurk getJsonPlurk() {
+		return jsonPlurk;
+	}
+	public void setJsonPlurk(JsonPlurk jsonPlurk) {
+		if(jsonPlurk == null) return;
+		this.jsonPlurk = jsonPlurk;
+		if(jsonPlurk.id != null) setId(jsonPlurk.id);
+		if(jsonPlurk.plurk_id != null) setId(jsonPlurk.plurk_id);
+		setQualifier(jsonPlurk.qualifier);
+		setQualifierTranslated(jsonPlurk.qualifier_translated);
+		setIsUnread(jsonPlurk.is_unread);
+		setPlurkType(jsonPlurk.plurk_type);
+		setUserId(jsonPlurk.user_id);
+		setOwnerId(jsonPlurk.owner_id);
+		setPosted(jsonPlurk.posted);
+		setNoComments(jsonPlurk.no_comments);
+		setContent(jsonPlurk.content);
+		setContentRaw(jsonPlurk.content_raw);
+		setResponseCount(jsonPlurk.response_count);
+		setResponsesSeen(jsonPlurk.responses_seen);
+		setLang(jsonPlurk.lang);
+		setLimitedTo(jsonPlurk.limited_to);
+	}
+	
+	public Plurk() {}
+	public Plurk(Long id) {
+		this.id = id;
+	}
+	public Plurk(String content, PlurkQualifier qualifier) {
+		this.content = content;
+		this.qualifier = qualifier;
+	}
+	public Plurk(String content) {
+		this.content = content;
+		this.qualifier = PlurkQualifier.SAYS;
+	}
+	public Plurk(JsonPlurk jsonPlurk) {
+		this.setJsonPlurk(jsonPlurk);
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public PlurkQualifier getQualifier() {
+		return qualifier;
+	}
+	public void setQualifier(String qualifier) {
+		for(PlurkQualifier plurkQualifier:PlurkQualifier.values()) {
+			if(plurkQualifier.toString().equals(qualifier)) {
+				this.qualifier = plurkQualifier;
+				break;
+			}
+		}
+	}
+	public String getQualifierTranslated() {
+		return qualifierTranslated;
+	}
+	public void setQualifierTranslated(String qualifierTranslated) {
+		this.qualifierTranslated = qualifierTranslated;
+	}
+	public PlurkIsUnread getIsUnread() {
+		return isUnread;
+	}
+	public void setIsUnread(Integer isUnread) {
+		for(PlurkIsUnread plurkIsUnread:PlurkIsUnread.values()) {
+			if(plurkIsUnread.getSource().equals(isUnread)) {
+				this.isUnread = plurkIsUnread;
+				break;
+			}
+		}
+	}
+	public PlurkType getPlurkType() {
+		return plurkType;
+	}
+	public void setPlurkType(Integer plurkType) {
+		for(PlurkType plurkTypes:PlurkType.values()) {
+			if(plurkTypes.getSource().equals(plurkType)) {
+				this.plurkType = plurkTypes;
+				break;
+			}
+		}
+	}
+	public PlurkNoComments getNoComments() {
+		return noComments;
+	}
+	public void setNoComments(Integer noComments) {
+		for(PlurkNoComments plurkNoComments:PlurkNoComments.values()) {
+			if(plurkNoComments.getSource().equals(noComments)) {
+				this.noComments = plurkNoComments;
+				break;
+			}
+		}
+	}
+	public Date getPosted() {
+		return posted;
+	}
+	public void setPosted(String dateString) {
+		this.posted = PlurkFactory.getDate(dateString);
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getContentRaw() {
+		return contentRaw;
+	}
+	public void setContentRaw(String contentRaw) {
+		this.contentRaw = contentRaw;
+	}
+	public Long getResponseCount() {
+		return responseCount;
+	}
+	public void setResponseCount(Long responseCount) {
+		this.responseCount = responseCount;
+	}
+	public Long getResponsesSeen() {
+		return responsesSeen;
+	}
+	public void setResponsesSeen(Long responsesSeen) {
+		this.responsesSeen = responsesSeen;
+	}
+	public String getLang() {
+		return lang;
+	}
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+	public String getLimitedTo() {
+		return limitedTo;
+	}
+	public void setLimitedTo(String limitedTo) {
+		this.limitedTo = limitedTo;
+	}
+	public PlurkUser getPlurkOwner() {
+		return plurkOwner;
+	}
+	public void setPlurkOwner(PlurkUser plurkOwner) {
+		this.plurkOwner = plurkOwner;
+	}
+	public Long getUserId() {
+		return userId;
+	}
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+	public Long getOwnerId() {
+		return ownerId;
+	}
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
 	public PlurkUser getPlurkUser() {
 		return plurkUser;
 	}
 	public void setPlurkUser(PlurkUser plurkUser) {
 		this.plurkUser = plurkUser;
 	}
-	
-	public void print() {
-		print("");
+	public Plurk getParent() {
+		return parent;
 	}
-	public void print(String offset) {
-		System.out.println(offset + "--------------------Plurk-----------------------");
-		System.out.print(offset + "plurk_id=" + plurk_id);
-		System.out.print(",owner_id=" + owner_id);
-		System.out.print(",posted=" + posted);
-		System.out.println(",content=" + content);
+	public void setParent(Plurk parent) {
+		this.parent = parent;
 	}
-	
-	public enum PlurkQualifier {
-		loves("loves"), likes("likes"), shares("shares")
-		,gives("gives"), hates("hates"), wants("wants")
-		,has("has"), will("will"), asks("asks")
-		,wishes("wishes"), was("was"), feels("feels")
-		,thinks("thinks"), says("says"), is("is")
-		,colon(":"), freestyle("freestyle"), hopes("hopes")
-		,needs("needs"), wonders("wonders");
-
-		private String description;
-
-		PlurkQualifier(String description) {
-			this.description = description;
-		}
-
-		public String toString() {
-			return description;
-		}
+	public List<Plurk> getResponses() {
+		return responses;
+	}
+	public void setResponses(List<Plurk> responses) {
+		this.responses = responses;
 	}
 }
