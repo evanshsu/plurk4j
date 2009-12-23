@@ -1,16 +1,13 @@
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-
 import plurk4j.PlurkFactory;
 import plurk4j.PlurkSession;
 import plurk4j.entity.Plurk;
 import plurk4j.entity.PlurkProfile;
 import plurk4j.entity.PlurkUser;
-import plurk4j.official.JsonPlurk;
-import plurk4j.official.JsonResponses;
+
 /***
  * Demo
  * @author afat613@gmail.com
