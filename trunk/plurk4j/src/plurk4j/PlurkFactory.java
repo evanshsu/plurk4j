@@ -505,7 +505,7 @@ public class PlurkFactory {
 	/***
 	 * Clear PlurkPool cache
 	 */
-	public static void flush() {
-		PlurkPool.flush();
+	public static void clear() {
+		PlurkPool.clear();
 	}
 }

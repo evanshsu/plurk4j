@@ -21,7 +21,7 @@ public class PlurkPool {
 	private static Map<String, Plurk> plurks = new HashMap<String, Plurk>();
 	private static Map<String, PlurkUser> plurkUsers = new HashMap<String, PlurkUser>();
 	
-	static void flush() {
+	static void clear() {
 		plurks = new HashMap<String, Plurk>();
 		plurkUsers = new HashMap<String, PlurkUser>();
 	}
